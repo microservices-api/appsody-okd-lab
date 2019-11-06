@@ -1,13 +1,13 @@
-# Compose a Cloud Native Masterpiece with Appsody
+# Compose a Cloud-Native Masterpiece with Appsody
 
 This lab demonstrates developing and deploying enterprise-grade, cloud-native applications using [Appsody](https://appsody.dev).
 
 
 ## Connect to the VM
 
-For the workshop at CASCON X EVOKE 2019, we have prepared some virtual machines (VM) with the necessary pre-requisites. You can borrow a VM from us to complete the lab.
+For the workshop at CASCON x EVOKE 2019, we have prepared some virtual machines (VM) with the necessary pre-requisites. You can borrow a VM from us to complete the lab.
 
-The VMs will only be available through the wireless network `classroom`. So make sure you are connected to it. VMs will not be available via wireless netowork 'casconxevoke'.
+Make sure you are connected to wireless network `Classroom`. Password is `cas-ibm-19`. The VMs will only be available through it.
 
 Use `MicroSoft Remote Desktop` client to connect to the VM we provided to you.
 
@@ -29,14 +29,14 @@ Start the OpenShift Cluster by running:
 oc cluster up 
 ```
 
-Please wait for the cluster to be ready (~5 minutes). 
-
-Running the above command multiple times could create problems, so please run the above command only once and wait for it to complete.
+The cluster will take around 5 minutes to be available. While it's starting you can continue with rest of the lab. 
 
 
-## Using Appsody
+## Hands-on with Appsody
 
 ### Find Appsody stacks
+
+Open another terminal window.
 
 Run the following command to see the list of Appsody stacks available to you:
 
@@ -83,7 +83,7 @@ experimental	https://github.com/appsody/stacks/releases/latest/download/experime
 
 ### Explore an Appsody stack
 
-Appsody supports curating existing application stacks (as well as creating new stacks from scratch). This feature is very useful for Enterprise Architects who wants to help developers in their organization get started with writing cloud-native applications, without needing much knowledge about Docker or Kubernetes. At the same time, Enterprise Architects can define the enterprise image and policies everyone in their organization must use and abide by. End result is consistency in the way applications are developed and deployed. The customized stacks can then be hosted in internal repositories for the developers in the organization to consume.
+Appsody supports curating existing application stacks for your needs as well as creating new stacks from scratch. This feature is very useful for Enterprise Architects who wants to help developers in their organization get started with writing cloud-native applications, without needing much knowledge about Docker or Kubernetes. At the same time, Enterprise Architects can define the enterprise image and policies everyone in their organization must use and abide by. End result is consistency in the way applications are developed and deployed. The customized stacks can then be hosted in internal repositories for the developers in the organization to consume.
 
 Let's look at the [java-microprofile stack](https://github.com/appsody/stacks/tree/master/incubator/java-microprofile/image/project) as an example. An Enterprise Architect can customise the [Dockerfile](https://github.com/appsody/stacks/blob/master/incubator/java-microprofile/image/project/Dockerfile). For example, they can enable TLS/SSL for security reasons and monitoring for observability reasons. Liberty allows to easily enable [enterprise functionalities](https://github.com/OpenLiberty/ci.docker#enterprise-functionality) inside Dockerfile.
 
@@ -91,14 +91,14 @@ Let's look at the [java-microprofile stack](https://github.com/appsody/stacks/tr
 
 ### Create a new project with Appsody
 
-Create a directory named `starter` and navigate to it in terminal by running the following commands:
+Let's create a directory named `starter` and navigate to it in terminal by running the following commands:
 
 ```
 mkdir starter
 cd starter
 ```
 
-Let's create a new project using the `java-microprofile` stack, which uses the Java MicroProfile APIs and will run on the open-source Open Liberty runtime on Eclipse Open J9.
+Let's create a new project using the `java-microprofile` stack, which uses the Java MicroProfile APIs and will run on the open-sourced Open Liberty runtime.
 
 ```
 appsody init java-microprofile
@@ -118,15 +118,15 @@ code .
 
 VS Code will launch and display the files from the newly created project (on the left-side panel).
 
-Note: You can ignore and simply close any pop-ups in VS Code, including the ones to update any libraries.
+_Note:_ You can ignore and simply close any pop-ups in VS Code, including the ones that prompt to update any libraries.
 
 Expand the `src` folder and you should see a file structure similar to this:
 
-<img src="images/src-folder.png" width="25%" height="25%">
+<img src="images/src-folder.png" width="30%" height="30%">
 
-This is intentionally a 'bare-bones' project so as to avoid the need to delete unnecessary files. It contains a JAX-RS Application class named StarterApplication.java, Liberty server configuration server.xml, a static welcome page index.html and the project build file pom.xml. Check out the content of those files.
+This project provides the necessary files to get started with writing a microservice in Java. It contains a JAX-RS Application class named _StarterApplication.java_, Liberty server configuration file named _server.xml_, a static welcome page named _index.html_ and the project build file _pom.xml_. Check out the content of those files.
 
-_TODO: Include more information about some of the starter files. Include MP Health (readiness/liveness)info here_
+In addition, the project also provides _StarterReadinessCheck.java_ and _StarterLivenessCheck.java_ which allows you to define the health definition for your application using [MicroProfile Health](https://microprofile.io/project/eclipse/microprofile-health). 
 
 ---
 
@@ -151,6 +151,7 @@ _Error 500: javax.servlet.ServletException: At least one provider or resource cl
 ### Create a simple Hello Service
 
 Let's create a new endpoint `/hello` to display message `Hello!`. 
+
 Create a new file at `src/main/java/dev/appsody/starter/HelloService.java` with the following content. 
 
 In VS Code, you can do this by right-clicking on the `starter` package and selecting `New File`, enter `HelloService.java` as file name and then copy the following content and save file (from drop-down menu select _File_ and then _Save_).
@@ -174,7 +175,7 @@ public class HelloService {
 }
 ```
 
-As soon as you save the file, the changes will be automatically picked up and the application will be updated. Wait for the following message in terminal (within VS Code):
+As soon as you save the file, the changes will be automatically picked up and the application will be updated. Wait for a message similar to the following in terminal (within VS Code):
 
 _The application starter-app updated in 0.572 seconds._
 
@@ -194,15 +195,19 @@ Wait for the following message in terminal:
 
 _Terminal will be reused by tasks, press any key to close it._
 
+---
+
+### Deploying to OpenShift cluster
+
+We need the OpenShift cluster to be up and running for this portion of the lab and onwards. 
+
+Ensure that the first command you ran, `oc cluster up`, to bring the OpenShift cluster completed in MATE terminal.
+
 We'll use the terminal to run Appsody deploy command. There is a Task in VS Code for deploy just like run and stop, but we need to deploy with some custom configuration values.
 
 It's easier to use the terminal within VS Code, rather than the MATE Terminal. This way you don't need to switch back and forth between VS Code and terminal window. To open a new terminal window in VS Code, select `Terminal` from the top-menu and then select `New Terminal`. 
 
 Ensure you are in the `starter` folder in terminal. Enter `pwd` to confirm.
-
----
-
-### Deploying to OpenShift cluster
 
 Request a new project:
 
@@ -369,7 +374,7 @@ Click on `Save`.
 
 You should see traffic split information similar to this in the console: 
 
-<img src="images/traffic-split-display.png" width="80%" height="80%">
+<img src="images/traffic-split-display.png" width="100%" height="100%">
 
 The route split between v1 and v2 is now set. 4/5 requests should now be sent to v1 and the rest to v2. Let's test using curl in terminal. The browser caches the output, so it's not reliable.
 
@@ -381,7 +386,7 @@ curl http://starter-my-project.127.0.0.1.nip.io/starter/hello
 
 Repeat the command 10 times and observe that 80% of the time, the message comes from v1 of HelloService (just a Hello) and 20% of the time the message comes from v2 of HelloService (the message with user name).
 
-<img src="images/traffic-split.png" width="80%" height="80%">
+<img src="images/traffic-split.png" width="90%" height="90%">
 
 Now that you've tested v2 with real traffic and it displays the output you expect, you feel more confident. Let's modify the split to be 50%/50%. 
 
@@ -403,7 +408,7 @@ Wait for the command to complete. You will see the following message at the end:
 
 _Deployed project running at starter-v2-my-project.127.0.0.1.nip.io_
 
-In browser, navigate to the link provided by the above message. You should see the welcome page. Next, append `/starter/hello` to the URL and you will be greeted with a personalized message that includes user name. 
+In browser, navigate to the link provided by above message. You should see the welcome page. Next, append `/starter/hello` to the URL and you will be greeted with a personalized message that includes the user name you specified. 
 
 New version of the application, v2, is now exposed.
 
@@ -415,7 +420,21 @@ oc delete appsodyapplication starter -n my-project
 
 ---
 
-### Optional: Enabling persistence
+### Explore Health, API and Metrics endpoints
+
+Navigate to the Health endpoint starter-v2-my-project.127.0.0.1.nip.io/hello. You'll see that liveness, readiness and overall status are reported as `UP`. This is reported by _StarterReadinessCheck.java_ and _StarterLivenessCheck.java_ you previously explored. Kubernetes continiously monitors the health of the application and if health checks were to fail, Kubernetes will automatically take necessary actions such as stop sending requests to microservice and restarting microservice if failures exceed defined threshold.
+
+Next, navigate to the OpenAPI endpoint starter-v2-my-project.127.0.0.1.nip.io/openapi/ui. You'll see information about some API endpoints that are available.
+
+Navigate to the _Application Metrics for Java_ endpoint starter-v2-my-project.127.0.0.1.nip.io/javametrics-dash. You will see a dashboard with various metrics. It'll be empty. Let's populate it with some data. In a separate tab, navigate to the `/starter/hello` endpoint as you did before. Refresh it 5-10 times with at least a second delay in between. Go back to the dashboard to see some metrics information such as HTTP requests average response time, throughput, CPU/heap usage and garbage collection time. Switch to the `Summary` tab and see information about HTTP requests.
+
+<img src="images/javametrics-dash.png" width="80%" height="80%">
+
+You didn't have to enable or configure anything to get the health, API or metrics information. It was automatically enabled and configured by the Appsody's stack `java-microprofile`. Similarly, other Application Stacks from Appsody provide useful functionalities by default. So developers can just focus on writing code.
+
+---
+
+### Bonus: Enabling persistence
 
 Data from the container will be lost when the container is stopped, so it is very important to persist critical data by storing them outside the container or the pod running them.
 
@@ -437,7 +456,7 @@ In OpenShift Web Console, select `Applications` from the menu on the left-side a
 
 Click on `Storage` from the side-menu and you should see a _PersistentVolumeClaim_ named `pvc-starter-v2-0`.
 
-<img src="images/pvc-status.png" width="80%" height="80%">
+<img src="images/pvc-status.png" width="100%" height="100%">
 
 The `Status` column should state _Bound to volume_ along with a persistent volume ID (in bold letters). Make a note of the persistent volume ID (PV_ID). In above example, PV_ID is pv0029.
 
@@ -455,7 +474,7 @@ Enter the password `cas2019con`
 
 You should see one or more message logs, similar to this:
 
-<img src="images/pv-files.png" width="80%" height="80%">
+<img src="images/pv-files.png" width="100%" height="100%">
 
 The logging data is now persisted. Even if the container is stopped or crashes or the entire application is deleted, the data will still be available. 
 
@@ -478,3 +497,7 @@ Stop OpenShift cluster:
 ```
 oc cluster down
 ```
+
+---
+
+**Congratulations! You've completed the lab!**
