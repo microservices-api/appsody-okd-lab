@@ -203,12 +203,6 @@ We need the OpenShift cluster to be up and running for this portion of the lab a
 
 Ensure that the first command you ran, `oc cluster up`, to bring the OpenShift cluster completed in MATE terminal.
 
-System Admin role is required to perform cluster operations. Login as admin by running the following command:
-
-```
-oc login -u system:admin
-```
-
 We'll use the terminal to run Appsody deploy command. There is a Task in VS Code for deploy just like run and stop, but we need to deploy with some custom configuration values.
 
 It's easier to use the terminal within VS Code, rather than the MATE Terminal. This way you don't need to switch back and forth between VS Code and terminal window. To open a new terminal window in VS Code, select `Terminal` from the top-menu and then select `New Terminal`. 
@@ -223,9 +217,12 @@ oc new-project my-project
 
 You should be automatically be switched to the newly created project `my-project`.
 
-Let's build and deploy your Appsody project to your Kubernetes cluster.
+System Admin role is required to perform cluster operations, such as installing the Appsody Operator. Login as admin by running the following command:
 
-Run the following command:
+```
+oc login -u system:admin
+```
+Let's build and deploy your Appsody project to your Kubernetes cluster. Run the following command:
 
 ```bash
 appsody deploy -t starter:v1 -n my-project
@@ -428,7 +425,7 @@ oc delete appsodyapplication starter -n my-project
 
 ### Explore Health, API and Metrics endpoints
 
-Navigate to the Health endpoint starter-v2-my-project.127.0.0.1.nip.io/hello. You'll see that liveness, readiness and overall status are reported as `UP`. This is reported by _StarterReadinessCheck.java_ and _StarterLivenessCheck.java_ you previously explored. Kubernetes continiously monitors the health of the application and if health checks were to fail, Kubernetes will automatically take necessary actions such as stop sending requests to microservice and restarting microservice if failures exceed defined threshold.
+Navigate to the Health endpoint starter-v2-my-project.127.0.0.1.nip.io/health. You'll see that liveness, readiness and overall status are reported as `UP`. This is reported by _StarterReadinessCheck.java_ and _StarterLivenessCheck.java_ you previously explored. Kubernetes continiously monitors the health of the application and if health checks were to fail, Kubernetes will automatically take necessary actions such as stop sending requests to microservice and restarting microservice if failures exceed defined threshold.
 
 Next, navigate to the OpenAPI endpoint starter-v2-my-project.127.0.0.1.nip.io/openapi/ui. You'll see information about some API endpoints that are available.
 
