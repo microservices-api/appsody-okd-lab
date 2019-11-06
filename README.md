@@ -203,6 +203,12 @@ We need the OpenShift cluster to be up and running for this portion of the lab a
 
 Ensure that the first command you ran, `oc cluster up`, to bring the OpenShift cluster completed in MATE terminal.
 
+System Admin role is required to perform cluster operations. Login as admin by running the following command:
+
+```
+oc login -u system:admin
+```
+
 We'll use the terminal to run Appsody deploy command. There is a Task in VS Code for deploy just like run and stop, but we need to deploy with some custom configuration values.
 
 It's easier to use the terminal within VS Code, rather than the MATE Terminal. This way you don't need to switch back and forth between VS Code and terminal window. To open a new terminal window in VS Code, select `Terminal` from the top-menu and then select `New Terminal`. 
